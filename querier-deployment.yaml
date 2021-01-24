@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thanos-querier
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: thanos-querier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: thanos-querier
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: thanos-querier
+    spec:
+      containers:
+      - args:
+        - query
+        - --log.level=debug
+        - --query.auto-downsampling
+        - --grpc-address=0.0.0.0:10901
+        - --http-address=0.0.0.0:9090
+        - --query.partial-response
+        - --query.replica-label=prometheus_replica
+        - --store=dnssrv+_grpc._tcp.prometheus-operated.monitoring.svc 
+        - --store=dnssrv+_grpc._tcp.thanos-store.monitoring.svc
+        - --store=104.42.172.173:10901
+        image: thanosio/thanos:v0.12.2
+        livenessProbe:
+          failureThreshold: 4
+          httpGet:
+            path: /-/healthy
+            port: 9090
+            scheme: HTTP
+          periodSeconds: 30
+        name: thanos-querier
+        ports:
+        - containerPort: 10901
+          name: grpc
+        - containerPort: 9090
+          name: http
+        readinessProbe:
+          failureThreshold: 20
+          httpGet:
+            path: /-/ready
+            port: 9090
+            scheme: HTTP
+          periodSeconds: 5
+        terminationMessagePolicy: FallbackToLogsOnError
+      terminationGracePeriodSeconds: 120

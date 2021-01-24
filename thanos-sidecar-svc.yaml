@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: thanos-sidecar
+  namespace: monitoring
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  selector:
+    app: prometheus
+  ports:
+  - port: 10901
+    targetPort: grpc

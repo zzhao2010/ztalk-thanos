@@ -1,0 +1,26 @@
+prometheus:
+  prometheusSpec:
+    replicas: 1      # work in High-Availability mode
+    retention: 12h 
+    image:
+      tag: v2.24.1   # use a specific version of Prometheus
+    externalLabels:  # a cool way to add default labels to all metrics 
+      geo: us          
+      region: westus
+      cluster: aks01
+    thanos:         # add Thanos Sidecar
+      tag: v0.13.0   # a specific version of Thanos
+      objectStorageConfig: # blob storage configuration to upload metrics 
+        key: thanos.yaml
+        name: thanos-objstore-config
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    image:
+      tag: v0.21.0
+grafana:
+  enabled: true
+  replicas: 1
+  image:
+    repository: grafana/grafana
+    tag: 7.1.0
