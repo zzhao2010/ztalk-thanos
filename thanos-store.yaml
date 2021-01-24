@@ -84,7 +84,7 @@ data:
   thanos-store.yml: |-
     type: AZURE
     config:
-      storage_account: "prometheusstorage01"
-      storage_account_key: "loy51tUup2Qpi6Qr+xu+rWcx+ni7Dem5hVw1XDu77AcAIMeyaO8m5qLPKz0dIYfZERp2x0PG57XecX93JdEeDQ=="
+      storage_account: "<account_name>"
+      storage_account_key: "<access_key>"
       container: "thanos"
       max_retries: 0
